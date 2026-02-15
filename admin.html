@@ -51,6 +51,26 @@ input{
 </table>
 
 <script type="module">
+  import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+import { getDoc, doc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+const auth = getAuth();
+
+onAuthStateChanged(auth, async (user)=>{
+  if(!user){
+    window.location.href="login.html";
+    return;
+  }
+
+  const docSnap = await getDoc(doc(db,"users",user.uid));
+  const data = docSnap.data();
+
+  if(!data || data.role !== "admin"){
+    alert("غير مصرح ❌");
+    window.location.href="login.html";
+  }
+});
+
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
 import { getFirestore, collection, getDocs, doc, updateDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
@@ -107,8 +127,41 @@ window.updateBalance = async function(uid){
   alert("تم التعديل بنجاح ✅");
 }
 
-loadUsers();
+import { onSnapshot, collection } from 
+"https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+function loadUsers(){
+  onSnapshot(collection(db,"users"),(snapshot)=>{
+    table.innerHTML=`
+      <tr>
+        <th>الاسم</th>
+        <th>الإيميل</th>
+        <th>الرصيد</th>
+        <th>تعديل</th>
+      </tr>
+    `;
+
+    snapshot.forEach((docSnap)=>{
+      const data=docSnap.data();
+      const uid=docSnap.id;
+
+      table.innerHTML+=`
+        <tr>
+          <td>${data.name}</td>
+          <td>${data.email}</td>
+          <td id="bal-${uid}">${data.balance}</td>
+          <td>
+            <input type="number" id="input-${uid}">
+            <button onclick="updateBalance('${uid}')">حفظ</button>
+          </td>
+        </tr>
+      `;
+    });
+  });
+}
+
 </script>
 
 </body>
 </html>
+
