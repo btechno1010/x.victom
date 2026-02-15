@@ -4,15 +4,43 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>لوحة الأدمن</title>
+
 <style>
-body{font-family:"Cairo",sans-serif;background:#f0f0f0;padding:30px;}
+body{
+  font-family:"Cairo",sans-serif;
+  background:#f0f0f0;
+  padding:30px;
+  direction:rtl;
+}
 h2{color:#0072ff;}
-input,button{padding:10px;margin:5px;border-radius:10px;border:1px solid #ccc;}
-button{border:none;background:#0072ff;color:#fff;font-weight:bold;cursor:pointer;}
+input,button{
+  padding:10px;
+  margin:5px;
+  border-radius:10px;
+  border:1px solid #ccc;
+}
+button{
+  border:none;
+  background:#0072ff;
+  color:#fff;
+  font-weight:bold;
+  cursor:pointer;
+}
 button:hover{background:#005bb5;}
-table{width:100%;border-collapse:collapse;margin-top:20px;}
-th,td{border:1px solid #ccc;padding:10px;text-align:center;}
-th{background:#0072ff;color:#fff;}
+table{
+  width:100%;
+  border-collapse:collapse;
+  margin-top:20px;
+}
+th,td{
+  border:1px solid #ccc;
+  padding:10px;
+  text-align:center;
+}
+th{
+  background:#0072ff;
+  color:#fff;
+}
 </style>
 </head>
 <body>
@@ -33,63 +61,152 @@ th{background:#0072ff;color:#fff;}
 <tr><th>الإيميل</th><th>الاسم</th><th>الرصيد</th></tr>
 </table>
 
-<script>
-// التأكد من تسجيل دخول الأدمن
-if(localStorage.getItem("isAdmin")!=="true"){
-  window.location.href="admin.html";
-}
+<!-- Firebase -->
+<script type="module">
 
-const accounts = JSON.parse(localStorage.getItem("accounts")) || [];
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { 
+  getAuth, 
+  onAuthStateChanged, 
+  signOut 
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+
+import { 
+  getFirestore,
+  collection,
+  getDocs,
+  query,
+  where,
+  updateDoc,
+  doc
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+
+const firebaseConfig = {
+  apiKey: "AIzaSyD5qHSNK17JFLxUj_9mnKbb7XsYVSwb9u8",
+  authDomain: "btechno-b5d80.firebaseapp.com",
+  projectId: "btechno-b5d80",
+  storageBucket: "btechno-b5d80.appspot.com",
+  messagingSenderId: "147019806629",
+  appId: "1:147019806629:web:bc7828be9ae8c4b4f1da4c",
+  measurementId: "G-L7DYLWVHHJ"
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
 
 const table = document.getElementById("usersTable");
-function renderTable(){
+const msg = document.getElementById("msg");
+
+// 🔐 التأكد إن اللي داخل أدمن
+onAuthStateChanged(auth, async (user) => {
+  if (!user) {
+    window.location.href = "admin.html";
+    return;
+  }
+
+  const q = query(collection(db, "users"), where("email", "==", user.email));
+  const snapshot = await getDocs(q);
+
+  if (snapshot.empty || snapshot.docs[0].data().role !== "admin") {
+    alert("غير مصرح لك بالدخول");
+    window.location.href = "admin.html";
+  } else {
+    loadUsers();
+  }
+});
+
+// 📋 تحميل المستخدمين
+async function loadUsers() {
   table.innerHTML = "<tr><th>الإيميل</th><th>الاسم</th><th>الرصيد</th></tr>";
-  accounts.forEach(u=>{
-    table.innerHTML += `<tr>
-      <td>${u.email}</td>
-      <td>${u.name}</td>
-      <td>${u.balance || 0}</td>
-    </tr>`;
+  const querySnapshot = await getDocs(collection(db, "users"));
+  querySnapshot.forEach((docSnap) => {
+    const data = docSnap.data();
+    table.innerHTML += `
+      <tr>
+        <td>${data.email}</td>
+        <td>${data.name}</td>
+        <td>${data.balance || 0}</td>
+      </tr>
+    `;
   });
 }
-renderTable();
 
-function addBalance(){
-  const email = document.getElementById("userEmail").value;
+// ➕ إضافة رصيد
+window.addBalance = async function() {
+  const email = document.getElementById("userEmail").value.trim();
   const amount = Number(document.getElementById("amount").value);
-  const msg = document.getElementById("msg");
 
-  const user = accounts.find(u=>u.email===email);
-  if(!user){ msg.innerText="❌ المستخدم غير موجود"; return; }
-  user.balance = (user.balance || 0) + amount;
-  localStorage.setItem("accounts",JSON.stringify(accounts));
-  renderTable();
-  msg.style.color="green";
-  msg.innerText="✅ تم إضافة الرصيد";
-}
+  if (!email || amount <= 0) {
+    msg.innerText = "❌ أدخل بيانات صحيحة";
+    return;
+  }
 
-function removeBalance(){
-  const email = document.getElementById("userEmail").value;
+  const q = query(collection(db, "users"), where("email", "==", email));
+  const snapshot = await getDocs(q);
+
+  if (snapshot.empty) {
+    msg.innerText = "❌ المستخدم غير موجود";
+    return;
+  }
+
+  const userDoc = snapshot.docs[0];
+  const newBalance = (userDoc.data().balance || 0) + amount;
+
+  await updateDoc(doc(db, "users", userDoc.id), {
+    balance: newBalance
+  });
+
+  msg.style.color = "green";
+  msg.innerText = "✅ تم إضافة الرصيد";
+
+  loadUsers();
+};
+
+// ➖ خصم رصيد
+window.removeBalance = async function() {
+  const email = document.getElementById("userEmail").value.trim();
   const amount = Number(document.getElementById("amount").value);
-  const msg = document.getElementById("msg");
 
-  const user = accounts.find(u=>u.email===email);
-  if(!user){ msg.innerText="❌ المستخدم غير موجود"; return; }
-  if((user.balance||0) < amount){ msg.innerText="❌ لا يمكن خصم هذا المبلغ"; return; }
-  user.balance -= amount;
-  localStorage.setItem("accounts",JSON.stringify(accounts));
-  renderTable();
-  msg.style.color="green";
-  msg.innerText="✅ تم خصم الرصيد";
-}
+  if (!email || amount <= 0) {
+    msg.innerText = "❌ أدخل بيانات صحيحة";
+    return;
+  }
 
-function logout(){
-  localStorage.removeItem("isAdmin");
-  window.location.href="admin.html";
-}
+  const q = query(collection(db, "users"), where("email", "==", email));
+  const snapshot = await getDocs(q);
+
+  if (snapshot.empty) {
+    msg.innerText = "❌ المستخدم غير موجود";
+    return;
+  }
+
+  const userDoc = snapshot.docs[0];
+  const currentBalance = userDoc.data().balance || 0;
+
+  if (currentBalance < amount) {
+    msg.innerText = "❌ الرصيد غير كافي";
+    return;
+  }
+
+  await updateDoc(doc(db, "users", userDoc.id), {
+    balance: currentBalance - amount
+  });
+
+  msg.style.color = "green";
+  msg.innerText = "✅ تم خصم الرصيد";
+
+  loadUsers();
+};
+
+// 🚪 تسجيل خروج
+window.logout = async function() {
+  await signOut(auth);
+  window.location.href = "admin.html";
+};
+
 </script>
 
 </body>
 </html>
-
-
