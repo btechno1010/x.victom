@@ -96,7 +96,12 @@ width:100%;padding:10px;margin-top:10px;
 border-radius:15px;border:1px solid #ccc
 }
 .modal p{font-size:13px;color:#555;margin:8px 0}
-
+/* زر عرض المزيد */
+.more-btn-container{
+  display:flex;
+  justify-content:center;
+  margin:20px 0;
+}
 
 .more-btn{
   padding:12px 25px;
@@ -227,12 +232,6 @@ const products=[
 {id:7,name:"جهاز شفط",price:1500,img:"images2/Shaft.jpg"},
 {id:8,name:"جهاز سكر",price:700,img:"images2/Sugar.jpg"}
 ];
-  /* زر عرض المزيد */
-.more-btn-container{
-  display:flex;
-  justify-content:center;
-  margin:20px 0;
-}
 
 const container=document.getElementById("products");
 products.forEach(p=>{
