@@ -233,19 +233,54 @@ onAuthStateChanged(auth,(user)=>{
 function renderProducts(rented){
   const container = document.getElementById("products");
   container.innerHTML = "";
-  products.forEach(p=>{
-    container.innerHTML += `
-    <div class="card">
+
+  products.forEach(p => {
+    const card = document.createElement("div");
+    card.className = "card";
+
+    card.innerHTML = `
       <img src="${p.img}">
       <h4>${p.name}</h4>
       <p>${p.price} ج</p>
       <p style="color:#00c853">ربح يومي ${(p.price*0.23).toFixed(0)} ج</p>
-      <button ${rented[p.id]?"disabled":""} onclick="rent(${p.id},${p.price})">
-        ${rented[p.id]?"تم التأجير":"تأجير"}
-      </button>
-    </div>`;
+    `;
+
+    const btn = document.createElement("button");
+    btn.textContent = rented[p.id] ? "تم التأجير" : "تأجير";
+    btn.disabled = rented[p.id];
+
+    // ✅ نضيف click listener بدل onclick
+    btn.addEventListener("click", async () => {
+      console.log("rent clicked", p.id, p.price, "UID:", currentUID, "Balance:", balance); // للتتبع
+      if(!currentUID){ showToast("❌ جاري التحميل..."); return; }
+      if(balance < p.price){ showToast("❌ الرصيد غير كافي"); return; }
+
+      const userDoc = doc(db,"users",currentUID);
+      const newBalance = balance - p.price;
+
+      await updateDoc(userDoc, {
+        balance: newBalance,
+        [`rented.${p.id}`]: true,
+        transactions: arrayUnion({type:"تأجير", amount:-p.price, date: new Date().toLocaleString()})
+      });
+
+      // تحديث المتغيرات المحلية
+      const docSnap = await getDoc(userDoc);
+      const data = docSnap.data();
+      balance = data.balance;
+      document.getElementById("balance").innerText = balance;
+
+      showToast("تم التأجير ✅");
+
+      // تحديث واجهة المنتجات بعد التأجير
+      renderProducts(data.rented || {});
+    });
+
+    card.appendChild(btn);
+    container.appendChild(card);
   });
 }
+
 
 function showToast(m){
   const t=document.getElementById("toast");
