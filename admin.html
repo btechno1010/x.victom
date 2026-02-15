@@ -36,7 +36,7 @@ th{background:#0072ff;color:#fff;}
 <script>
 // التأكد من تسجيل دخول الأدمن
 if(localStorage.getItem("isAdmin")!=="true"){
-  window.location.href="admin-login.html";
+  window.location.href="admin.html";
 }
 
 const accounts = JSON.parse(localStorage.getItem("accounts")) || [];
@@ -85,9 +85,10 @@ function removeBalance(){
 
 function logout(){
   localStorage.removeItem("isAdmin");
-  window.location.href="admin-login.html";
+  window.location.href="admin.html";
 }
 </script>
 
 </body>
 </html>
+
