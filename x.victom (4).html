@@ -263,6 +263,7 @@ async function addTransaction(type,amount){
 }
 
 /* تأجير */
+// --- دالة التأجير الجديدة ---
 window.rent = async function(id, price) {
   if(balance < price){ 
     showToast("❌ الرصيد غير كافي"); 
@@ -278,16 +279,22 @@ window.rent = async function(id, price) {
   await updateDoc(userDoc, {
     balance: newBalance,
     [`rented.${id}`]: true,
-    transactions: [...transactions, {type:"تأجير", amount:-price, date: new Date().toLocaleString()}]
+    transactions: arrayUnion({type:"تأجير", amount:-price, date: new Date().toLocaleString()})
   });
 
-  // بعد التأكيد، نحدث الرصيد محليًا
-  balance = newBalance;
-  transactions.push({type:"تأجير", amount:-price, date: new Date().toLocaleString()});
+  // بعد ما يحدث Firestore، نجيب البيانات مرة تانية لتحديث المتغيرات المحلية
+  const docSnap = await getDoc(userDoc);
+  const data = docSnap.data();
+  balance = data.balance;
+  transactions = data.transactions;
+
+  // تحديث واجهة الصفحة
   document.getElementById("balance").innerText = balance;
 
   showToast("تم التأجير ✅");
 }
+
+
 
 
 /* تسجيل يومي */
