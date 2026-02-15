@@ -176,7 +176,7 @@ header{text-align:center;padding:20px}
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
 import { getAuth, onAuthStateChanged, signInAnonymously } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-import { getFirestore, doc, onSnapshot, updateDoc, setDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+import { getFirestore, doc, onSnapshot, updateDoc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyD5qHSNK17JFLxUj_9mnKbb7XsYVSwb9u8",
@@ -263,24 +263,32 @@ async function addTransaction(type,amount){
 }
 
 /* تأجير */
-window.rent = async function(id,price){
-  if(balance<price){ showToast("❌ الرصيد غير كافي"); return; }
+window.rent = async function(id, price) {
+  if(balance < price){ 
+    showToast("❌ الرصيد غير كافي"); 
+    return; 
+  }
 
-  balance -= price;
-  document.getElementById("balance").innerText = balance;
-
-  // تحديث Firebase
   const userDoc = doc(db,"users",currentUID);
-  const rentedUpdate = {};
-  rentedUpdate[`rented.${id}`] = true;
+
+  // نحسب الرصيد الجديد
+  const newBalance = balance - price;
+
+  // نحدث rented وbalance وtransactions مرة واحدة في Firebase
   await updateDoc(userDoc, {
-    balance,
-    ...rentedUpdate
+    balance: newBalance,
+    [`rented.${id}`]: true,
+    transactions: [...transactions, {type:"تأجير", amount:-price, date: new Date().toLocaleString()}]
   });
 
-  await addTransaction("تأجير",-price);
+  // بعد التأكيد، نحدث الرصيد محليًا
+  balance = newBalance;
+  transactions.push({type:"تأجير", amount:-price, date: new Date().toLocaleString()});
+  document.getElementById("balance").innerText = balance;
+
   showToast("تم التأجير ✅");
 }
+
 
 /* تسجيل يومي */
 async function dailyLogin(){
@@ -292,6 +300,7 @@ async function dailyLogin(){
     document.getElementById("balance").innerText = balance;
     await updateDoc(userDoc,{balance});
     await addTransaction("مكافأة",40);
+
     showToast("✅ تم تسجيل الدخول اليومي");
   }else showToast("⏳ مرة واحدة كل 24 ساعة");
 }
