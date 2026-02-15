@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="ar">
 <head>
@@ -9,94 +8,95 @@
 <style>
 *{box-sizing:border-box;font-family:"Cairo",sans-serif}
 body{
-margin:0;direction:rtl;
-background:url("https://images.unsplash.com/photo-1586773860418-d37222d8fce3?q=80&w=1600") center/cover fixed;
-color:#fff
+  margin:0;direction:rtl;
+  background:url("https://images.unsplash.com/photo-1586773860418-d37222d8fce3?q=80&w=1600") center/cover fixed;
+  color:#fff
 }
 .overlay{background:rgba(6,19,31,.9);min-height:100vh;padding-bottom:80px}
 header{text-align:center;padding:20px}
 
 .container{
-display:grid;
-grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
-gap:18px;padding:20px
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
+  gap:18px;padding:20px
 }
 
 .card{
-background:rgba(255,255,255,.1);
-backdrop-filter:blur(12px);
-border-radius:20px;
-padding:15px;text-align:center;
-border:1px solid rgba(255,255,255,.2);
-box-shadow:0 10px 30px rgba(0,0,0,.4)
+  background:rgba(255,255,255,.1);
+  backdrop-filter:blur(12px);
+  border-radius:20px;
+  padding:15px;text-align:center;
+  border:1px solid rgba(255,255,255,.2);
+  box-shadow:0 10px 30px rgba(0,0,0,.4)
 }
 .card img{width:100%;height:120px;object-fit:contain}
 .card button{
-padding:8px 12px;border:none;border-radius:20px;
-font-weight:bold;cursor:pointer;margin-top:5px
+  padding:8px 12px;border:none;border-radius:20px;
+  font-weight:bold;cursor:pointer;margin-top:5px
 }
 .card button[disabled]{background:#555;cursor:not-allowed}
 
 .wallet{
-position:fixed;top:15px;right:15px;
-background:linear-gradient(135deg,#00e5ff,#0066ff);
-color:#000;padding:12px 18px;border-radius:40px;
-display:flex;gap:6px;align-items:center;
-font-weight:bold;z-index:1000;flex-wrap:wrap
+  position:fixed;top:15px;right:15px;
+  background:linear-gradient(135deg,#00e5ff,#0066ff);
+  color:#000;padding:12px 18px;border-radius:40px;
+  display:flex;gap:6px;align-items:center;
+  font-weight:bold;z-index:1000;flex-wrap:wrap
 }
 .wallet button{
-border:none;background:#000;color:#00e5ff;
-padding:5px 10px;border-radius:20px;cursor:pointer;font-size:12px
+  border:none;background:#000;color:#00e5ff;
+  padding:5px 10px;border-radius:20px;cursor:pointer;font-size:12px
 }
 
 .toast{
-position:fixed;top:-100px;right:50%;
-transform:translateX(50%);
-background:#e53935;color:#fff;
-padding:12px 25px;border-radius:30px;
-transition:.5s;z-index:4000
+  position:fixed;top:-100px;right:50%;
+  transform:translateX(50%);
+  background:#e53935;color:#fff;
+  padding:12px 25px;border-radius:30px;
+  transition:.5s;z-index:4000
 }
 .toast.show{top:30px}
 
 /* TRUST */
 .trust-section{
-margin:30px 20px;padding:25px;
-background:rgba(255,255,255,.05);
-border-radius:20px;text-align:center
+  margin:30px 20px;padding:25px;
+  background:rgba(255,255,255,.05);
+  border-radius:20px;text-align:center
 }
 .trust-logo{
-display:inline-block;margin-bottom:15px;
-padding:10px 20px;border-radius:30px;
-background:linear-gradient(135deg,#00ffea,#0066ff);
-color:#000;font-weight:bold;cursor:pointer
+  display:inline-block;margin-bottom:15px;
+  padding:10px 20px;border-radius:30px;
+  background:linear-gradient(135deg,#00ffea,#0066ff);
+  color:#000;font-weight:bold;cursor:pointer
 }
 .trust-badges{
-display:grid;
-grid-template-columns:repeat(auto-fit,minmax(80px,1fr));
-gap:15px;margin-top:20px
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(80px,1fr));
+  gap:15px;margin-top:20px
 }
 .trust-badges img{width:45px;opacity:.8;transition:.3s}
 .trust-badges img:hover{opacity:1;transform:scale(1.1)}
 
 /* POPUPS */
 .popup,.modal{
-position:fixed;top:50%;left:50%;
-transform:translate(-50%,-50%);
-background:#fff;color:#000;
-width:340px;border-radius:20px;
-padding:20px;text-align:center;
-display:none;z-index:5000
+  position:fixed;top:50%;left:50%;
+  transform:translate(-50%,-50%);
+  background:#fff;color:#000;
+  width:340px;border-radius:20px;
+  padding:20px;text-align:center;
+  display:none;z-index:5000
 }
 .popup button,.modal button{
-margin-top:10px;padding:8px 15px;
-border:none;border-radius:20px;
-background:#0066ff;color:#fff;cursor:pointer
+  margin-top:10px;padding:8px 15px;
+  border:none;border-radius:20px;
+  background:#0066ff;color:#fff;cursor:pointer
 }
 .modal input{
-width:100%;padding:10px;margin-top:10px;
-border-radius:15px;border:1px solid #ccc
+  width:100%;padding:10px;margin-top:10px;
+  border-radius:15px;border:1px solid #ccc
 }
 .modal p{font-size:13px;color:#555;margin:8px 0}
+
 /* زر عرض المزيد */
 .more-btn-container{
   display:flex;
@@ -140,7 +140,6 @@ border-radius:15px;border:1px solid #ccc
 <p>استثمارات موثوقة | أرباح يومية | منصات عالمية</p>
 </header>
 
-<!-- زر عرض المزيد من الأجهزة -->
 <div class="more-btn-container">
   <button class="more-btn" onclick="moreDevices()">عرض المزيد من الأجهزة</button>
 </div>
@@ -156,31 +155,6 @@ border-radius:15px;border:1px solid #ccc
 
 <!-- POPUPS -->
 <div class="container" id="products"></div>
-  <!-- ===== قسم الثقة والشهادات الاحترافي ===== -->
-<div class="trust-section">
-  <h3> الموقع موثوق وآمن@</h3>
-  
-  <div class="trust-icons">
-    <div>🔒<span>حماية البيانات</span></div>
-    <div>💳<span>دفع آمن</span></div>
-    <div>🛡️<span>موثوقية عالية</span></div>
-    <div>⚡<span>سرعة المعاملات</span></div>
-    <div>✔️<span>مراجعة العملاء</span></div>
-  </div>
-  
-  <div class="trust-badges">
-    <div>
-      <img src="https://www.paypalobjects.com/webstatic/i/logo/rebrand/ppcom.svg" alt="PayPal">
-      <p>PayPal دفع آمن</p>
-    </div>
-    <div>
-      <img src="https://upload.wikimedia.org/wikipedia/commons/4/41/Visa_Logo.png" alt="Visa">
-      <p>Visa مدعوم</p>
-    </div>
-    <div>
-      <img src="https://upload.wikimedia.org/wikipedia/commons/2/2a/Mastercard-logo.svg" alt="Mastercard">
-      <p>Mastercard مدعوم</p>
-    </div>
 
 <div class="modal" id="withdrawBox">
 <h3>طلب سحب</h3>
@@ -199,30 +173,28 @@ border-radius:15px;border:1px solid #ccc
 
 <div id="toast" class="toast"></div>
 
-<script>
-const ADMIN_EMAIL="btechno1010@gmail.com";
-const rate=0.23;
-const MIN_WITHDRAW = 230;
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+import { getAuth, onAuthStateChanged, signInAnonymously } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+import { getFirestore, doc, onSnapshot, updateDoc, setDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
-/* تحميل البيانات */
-let balance=Number(localStorage.getItem("balance"))||0;
-let rented=JSON.parse(localStorage.getItem("rented"))||{};
-let lastDaily=Number(localStorage.getItem("lastDaily"))||0;
-let transactions=JSON.parse(localStorage.getItem("transactions"))||[];
+const firebaseConfig = {
+  apiKey: "AIzaSyD5qHSNK17JFLxUj_9mnKbb7XsYVSwb9u8",
+  authDomain: "btechno-b5d80.firebaseapp.com",
+  projectId: "btechno-b5d80",
+  storageBucket: "btechno-b5d80.appspot.com",
+  messagingSenderId: "147019806629",
+  appId: "1:147019806629:web:bc7828be9ae8c4b4f1da4c"
+};
 
-/* بيانات المستخدم */
-let userCode=localStorage.getItem("userCode");
-let userName=localStorage.getItem("userName");
-if(!userCode){
-  userCode="USR-"+Math.floor(100000+Math.random()*900000);
-  userName=prompt("ادخل اسمك:");
-  localStorage.setItem("userCode",userCode);
-  localStorage.setItem("userName",userName);
-}
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
 
-document.getElementById("balance").innerText=balance;
+let currentUID = null;
+let balance = 0;
+let transactions = [];
 
-/* الأجهزة */
 const products=[
 {id:1,name:"جهاز ضغط دم",price:900,img:"images2/Press.jpg"},
 {id:2,name:"جهاز ECG",price:2500,img:"images2/Ecg.jpg"},
@@ -234,99 +206,132 @@ const products=[
 {id:8,name:"جهاز سكر",price:700,img:"images2/Sugar.jpg"}
 ];
 
-const container=document.getElementById("products");
-products.forEach(p=>{
-container.innerHTML+=`
-<div class="card">
-<img src="${p.img}">
-<h4>${p.name}</h4>
-<p>${p.price} ج</p>
-<p style="color:#00c853">ربح يومي ${(p.price*rate).toFixed(0)} ج</p>
-<button ${rented[p.id]?"disabled":""} onclick="rent(${p.id},${p.price})">
-${rented[p.id]?"تم التأجير":"تأجير"}
-</button>
-</div>`;
+/* تسجيل دخول مجهول */
+signInAnonymously(auth).catch(console.error);
+
+onAuthStateChanged(auth,(user)=>{
+  if(user){
+    currentUID = user.uid;
+    const userDoc = doc(db,"users",currentUID);
+
+    /* إنشاء المستخدم في Firestore إذا غير موجود */
+    setDoc(userDoc, { balance: 0, transactions: [], rented: {} }, { merge:true });
+
+    onSnapshot(userDoc,(docSnap)=>{
+      const data = docSnap.data();
+      balance = data.balance || 0;
+      transactions = data.transactions || [];
+      document.getElementById("balance").innerText = balance;
+
+      renderProducts(data.rented || {});
+    });
+  }
 });
 
-/* أدوات */
-function save(){
-localStorage.setItem("balance",balance);
-localStorage.setItem("rented",JSON.stringify(rented));
-localStorage.setItem("lastDaily",lastDaily);
-localStorage.setItem("transactions",JSON.stringify(transactions));
+function renderProducts(rented){
+  const container = document.getElementById("products");
+  container.innerHTML = "";
+  products.forEach(p=>{
+    container.innerHTML += `
+    <div class="card">
+      <img src="${p.img}">
+      <h4>${p.name}</h4>
+      <p>${p.price} ج</p>
+      <p style="color:#00c853">ربح يومي ${(p.price*0.23).toFixed(0)} ج</p>
+      <button ${rented[p.id]?"disabled":""} onclick="rent(${p.id},${p.price})">
+        ${rented[p.id]?"تم التأجير":"تأجير"}
+      </button>
+    </div>`;
+  });
 }
+
 function showToast(m){
-const t=document.getElementById("toast");
-t.innerText=m;t.classList.add("show");
-setTimeout(()=>t.classList.remove("show"),3000);
+  const t=document.getElementById("toast");
+  t.innerText=m;t.classList.add("show");
+  setTimeout(()=>t.classList.remove("show"),3000);
 }
+
 function moreDevices(){
   showToast("⚠️ تعذر تحميل المزيد من الأجهزة حالياً");
 }
-function addTransaction(type,amount){
-transactions.push({type,amount,date:new Date().toLocaleString()});
-save();
+
+async function addTransaction(type,amount){
+  transactions.push({type,amount,date:new Date().toLocaleString()});
+  await updateDoc(doc(db,"users",currentUID),{ transactions });
 }
 
-/* عمليات */
-function rent(id,price){
-if(balance<price)return showToast("❌ الرصيد غير كافي");
-rented[id]=true;
-balance-=price;
-addTransaction("تأجير",-price);
-save();location.reload();
+/* تأجير */
+window.rent = async function(id,price){
+  if(balance<price){ showToast("❌ الرصيد غير كافي"); return; }
+
+  balance -= price;
+  document.getElementById("balance").innerText = balance;
+
+  // تحديث Firebase
+  const userDoc = doc(db,"users",currentUID);
+  const rentedUpdate = {};
+  rentedUpdate[`rented.${id}`] = true;
+  await updateDoc(userDoc, {
+    balance,
+    ...rentedUpdate
+  });
+
+  await addTransaction("تأجير",-price);
+  showToast("تم التأجير ✅");
 }
-function dailyLogin(){
-const now=Date.now();
-if(now-lastDaily>=86400000){
-balance+=40;lastDaily=now;
-addTransaction("مكافأة",40);
-save();document.getElementById("balance").innerText=balance;
-}else showToast("⏳ مرة واحدة كل 24 ساعة");
+
+/* تسجيل يومي */
+async function dailyLogin(){
+  const userDoc = doc(db,"users",currentUID);
+  const lastDaily = transactions.find(t=>t.type==="مكافأة")?.date || 0;
+  const now = Date.now();
+  if(now - new Date(lastDaily).getTime() >= 86400000){
+    balance += 40;
+    document.getElementById("balance").innerText = balance;
+    await updateDoc(userDoc,{balance});
+    await addTransaction("مكافأة",40);
+    showToast("✅ تم تسجيل الدخول اليومي");
+  }else showToast("⏳ مرة واحدة كل 24 ساعة");
 }
-function requestWithdraw(){
-const a=+document.getElementById("withdrawAmount").value;
-if(a<MIN_WITHDRAW) return showToast("❌ الحد الأدنى للسحب 230 ج");
-if(a>balance) return showToast("❌ الرصيد غير كافي");
-balance-=a;addTransaction("سحب",-a);save();
-window.location.href=`mailto:${ADMIN_EMAIL}?subject=طلب سحب&body=الاسم:${userName}%0Aالكود:${userCode}%0Aالمبلغ:${a}`;
+
+/* سحب */
+async function requestWithdraw(){
+  const a = +document.getElementById("withdrawAmount").value;
+  if(a<230){ showToast("❌ الحد الأدنى للسحب 230 ج"); return; }
+  if(a>balance){ showToast("❌ الرصيد غير كافي"); return; }
+
+  balance -= a;
+  document.getElementById("balance").innerText = balance;
+  const userDoc = doc(db,"users",currentUID);
+  await updateDoc(userDoc,{balance});
+  await addTransaction("سحب",-a);
+
+  showToast("✅ طلب السحب تم");
+  window.location.href=`mailto:btechno1010@gmail.com?subject=طلب سحب&body=المبلغ: ${a}`;
 }
-function addFunds(){
-const a=+document.getElementById("addAmount").value;
-if(a<=0)return showToast("❌ مبلغ غير صالح");
-addTransaction("إيداع",a);
-window.location.href=`mailto:${ADMIN_EMAIL}?subject=طلب إيداع&body=الاسم:${userName}%0Aالكود:${userCode}%0Aالمبلغ:${a}`;
+
+/* إيداع */
+async function addFunds(){
+  const a = +document.getElementById("addAmount").value;
+  if(a<=0){ showToast("❌ مبلغ غير صالح"); return; }
+
+  await addTransaction("إيداع",a);
+  showToast("✅ طلب الإيداع تم");
+  window.location.href=`mailto:btechno1010@gmail.com?subject=طلب إيداع&body=المبلغ: ${a}`;
 }
+
+/* سجل المعاملات */
 function showTransactions(){
-alert(transactions.map(t=>`${t.date} | ${t.type} | ${t.amount}`).join("\n")||"لا يوجد سجل");
+  if(transactions.length === 0){ alert("لا يوجد سجل"); return; }
+  alert(transactions.map(t=>`${t.date} | ${t.type} | ${t.amount}`).join("\n"));
 }
+
+/* فتح/اغلاق المودال */
 function toggleModal(id){
-const m=document.getElementById(id);
-m.style.display=m.style.display==="block"?"none":"block";
+  const m=document.getElementById(id);
+  m.style.display=m.style.display==="block"?"none":"block";
 }
 </script>
-<script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-import { getFirestore, doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
-
-// 🔹 Firebase Config
-const firebaseConfig = {
-  apiKey: "AIzaSyD5qHSNK17JFLxUj_9mnKbb7XsYVSwb9u8",
-  authDomain: "btechno-b5d80.firebaseapp.com",
-  projectId: "btechno-b5d80",
-  storageBucket: "btechno-b5d80.appspot.com",
-  messagingSenderId: "147019806629",
-  appId: "1:147019806629:web:bc7828be9ae8c4b4f1da4c",
-  measurementId: "G-L7DYLWVHHJ"
-};
-
-// 🔹 Initialize Firebase
-const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
-const db = getFirestore(app);
-</script>
-
 
 </body>
-</html>  
+</html>
