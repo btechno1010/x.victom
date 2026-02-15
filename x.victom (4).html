@@ -203,13 +203,8 @@ const ADMIN_EMAIL="btechno1010@gmail.com";
 const rate=0.23;
 const MIN_WITHDRAW = 230;
 
-/* تحميل البيانات */
-let balance = 900; // يبدأ 900 كل مرة
-localStorage.setItem("balance", balance);
-let rented=JSON.parse(localStorage.getItem("rented"))||{};
-let lastDaily=Number(localStorage.getItem("lastDaily"))||900;
-let transactions=JSON.parse(localStorage.getItem("transactions"))||[];
-
+ 
+et balance=Number(localStorage.getItem("balance"))||0; let rented=JSON.parse(localStorage.getItem("rented"))||{}; let lastDaily=Number(localStorage.getItem("lastDaily"))||0; let transactions=JSON.parse(localStorage.getItem("transactions"))||[];
 /* بيانات المستخدم */
 let userCode=localStorage.getItem("userCode");
 let userName=localStorage.getItem("userName");
