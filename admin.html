@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>لوحة الأدمن</title>
+<style>
+body{font-family:"Cairo",sans-serif;background:#f0f0f0;padding:30px;}
+h2{color:#0072ff;}
+input,button{padding:10px;margin:5px;border-radius:10px;border:1px solid #ccc;}
+button{border:none;background:#0072ff;color:#fff;font-weight:bold;cursor:pointer;}
+button:hover{background:#005bb5;}
+table{width:100%;border-collapse:collapse;margin-top:20px;}
+th,td{border:1px solid #ccc;padding:10px;text-align:center;}
+th{background:#0072ff;color:#fff;}
+</style>
+</head>
+<body>
+
+<h2>👑 لوحة الأدمن - تعديل أرصدة المستخدمين</h2>
+
+<div>
+<input type="email" id="userEmail" placeholder="إيميل المستخدم">
+<input type="number" id="amount" placeholder="المبلغ">
+<button onclick="addBalance()">➕ إضافة رصيد</button>
+<button onclick="removeBalance()">➖ خصم رصيد</button>
+<button onclick="logout()">خروج</button>
+<p id="msg" style="color:red;font-size:14px;"></p>
+</div>
+
+<h3>قائمة المستخدمين</h3>
+<table id="usersTable">
+<tr><th>الإيميل</th><th>الاسم</th><th>الرصيد</th></tr>
+</table>
+
+<script>
+// التأكد من تسجيل دخول الأدمن
+if(localStorage.getItem("isAdmin")!=="true"){
+  window.location.href="admin-login.html";
+}
+
+const accounts = JSON.parse(localStorage.getItem("accounts")) || [];
+
+const table = document.getElementById("usersTable");
+function renderTable(){
+  table.innerHTML = "<tr><th>الإيميل</th><th>الاسم</th><th>الرصيد</th></tr>";
+  accounts.forEach(u=>{
+    table.innerHTML += `<tr>
+      <td>${u.email}</td>
+      <td>${u.name}</td>
+      <td>${u.balance || 0}</td>
+    </tr>`;
+  });
+}
+renderTable();
+
+function addBalance(){
+  const email = document.getElementById("userEmail").value;
+  const amount = Number(document.getElementById("amount").value);
+  const msg = document.getElementById("msg");
+
+  const user = accounts.find(u=>u.email===email);
+  if(!user){ msg.innerText="❌ المستخدم غير موجود"; return; }
+  user.balance = (user.balance || 0) + amount;
+  localStorage.setItem("accounts",JSON.stringify(accounts));
+  renderTable();
+  msg.style.color="green";
+  msg.innerText="✅ تم إضافة الرصيد";
+}
+
+function removeBalance(){
+  const email = document.getElementById("userEmail").value;
+  const amount = Number(document.getElementById("amount").value);
+  const msg = document.getElementById("msg");
+
+  const user = accounts.find(u=>u.email===email);
+  if(!user){ msg.innerText="❌ المستخدم غير موجود"; return; }
+  if((user.balance||0) < amount){ msg.innerText="❌ لا يمكن خصم هذا المبلغ"; return; }
+  user.balance -= amount;
+  localStorage.setItem("accounts",JSON.stringify(accounts));
+  renderTable();
+  msg.style.color="green";
+  msg.innerText="✅ تم خصم الرصيد";
+}
+
+function logout(){
+  localStorage.removeItem("isAdmin");
+  window.location.href="admin-login.html";
+}
+</script>
+
+</body>
+</html>
