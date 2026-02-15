@@ -9,123 +9,34 @@
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap" rel="stylesheet">
 
 <style>
-*{
-    box-sizing:border-box;
-    font-family:"Cairo",sans-serif;
-}
-
+*{box-sizing:border-box;font-family:"Cairo",sans-serif}
 body{
-    margin:0;
-    min-height:100vh;
-    background:
-      linear-gradient(rgba(3,10,20,.85),rgba(3,10,20,.85)),
-      url("https://images.unsplash.com/photo-1503387762-592deb58ef4e?q=80&w=1600");
-    background-size:cover;
-    background-position:center;
-    display:flex;
-    justify-content:center;
-    align-items:center;
-    color:#fff;
+    margin:0;min-height:100vh;
+    background:linear-gradient(rgba(3,10,20,.85),rgba(3,10,20,.85)),
+    url("https://images.unsplash.com/photo-1503387762-592deb58ef4e?q=80&w=1600");
+    background-size:cover;background-position:center;
+    display:flex;justify-content:center;align-items:center;color:#fff;
 }
-
-/* ===== العنوان ===== */
-.brand{
-    position:absolute;
-    top:25px;
-    width:100%;
-    text-align:center;
-    font-size:28px;
-    font-weight:700;
-    color:#00e5ff;
-    text-shadow:0 0 12px rgba(0,229,255,.6);
-}
-
-/* ===== الكارت ===== */
-.box{
-    width:360px;
-    background:rgba(255,255,255,0.08);
-    backdrop-filter:blur(14px);
-    border-radius:22px;
-    padding:25px;
-    box-shadow:0 0 40px rgba(0,0,0,.6);
-    border:1px solid rgba(255,255,255,.15);
-}
-
-/* ===== التابات ===== */
-.tabs{
-    display:flex;
-    margin-bottom:20px;
-}
-
-.tabs button{
-    flex:1;
-    padding:10px;
-    border:none;
-    cursor:pointer;
-    font-weight:700;
-    border-radius:20px;
-    background:#111;
-    color:#aaa;
-}
-
-.tabs button.active{
-    background:#00e5ff;
-    color:#000;
-    box-shadow:0 0 12px #00e5ff;
-}
-
-/* ===== الفورم ===== */
-form{
-    display:none;
-}
-
-form.active{
-    display:block;
-}
-
-input{
-    width:100%;
-    padding:11px;
-    margin:7px 0;
-    border-radius:14px;
-    border:none;
-    outline:none;
-}
-
-button.submit{
-    width:100%;
-    padding:11px;
-    margin-top:10px;
-    border:none;
-    border-radius:20px;
-    background:#ff7043;
-    color:#fff;
-    font-weight:700;
-    cursor:pointer;
-    box-shadow:0 0 12px rgba(255,112,67,.7);
-}
-
-button.submit:hover{
-    opacity:.9;
-}
-
-/* ===== رسائل ===== */
-.msg{
-    margin-top:10px;
-    font-size:14px;
-    text-align:center;
-}
+.brand{position:absolute;top:25px;width:100%;text-align:center;font-size:28px;font-weight:700;color:#00e5ff;text-shadow:0 0 12px rgba(0,229,255,.6);}
+.box{width:360px;background:rgba(255,255,255,0.08);backdrop-filter:blur(14px);border-radius:22px;padding:25px;box-shadow:0 0 40px rgba(0,0,0,.6);border:1px solid rgba(255,255,255,.15);}
+.tabs{display:flex;margin-bottom:20px;}
+.tabs button{flex:1;padding:10px;border:none;cursor:pointer;font-weight:700;border-radius:20px;background:#111;color:#aaa;}
+.tabs button.active{background:#00e5ff;color:#000;box-shadow:0 0 12px #00e5ff;}
+form{display:none;}
+form.active{display:block;}
+input{width:100%;padding:11px;margin:7px 0;border-radius:14px;border:none;outline:none;}
+button.submit{width:100%;padding:11px;margin-top:10px;border:none;border-radius:20px;background:#ff7043;color:#fff;font-weight:700;cursor:pointer;box-shadow:0 0 12px rgba(255,112,67,.7);}
+button.submit:hover{opacity:.9;}
+.msg{margin-top:10px;font-size:14px;text-align:center;}
 .success{color:#00e676}
 .error{color:#ff5252}
 </style>
 </head>
-
 <body>
 
 <div class="brand">🚀 منصة X.VÍČÞØM</div>
 
 <div class="box">
-
     <div class="tabs">
         <button id="loginTab" class="active" onclick="showLogin()">تسجيل دخول</button>
         <button id="registerTab" onclick="showRegister()">إنشاء حساب</button>
@@ -150,7 +61,6 @@ button.submit:hover{
         <button type="button" class="submit" onclick="register()">إنشاء حساب</button>
         <div id="registerMsg" class="msg"></div>
     </form>
-
 </div>
 
 <script>
@@ -167,8 +77,30 @@ function showRegister(){
     registerForm.classList.add("active");
     loginForm.classList.remove("active");
 }
+</script>
 
-function register(){
+<!-- ===== Firebase ===== -->
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+import { getFirestore, doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+/* Firebase Config */
+const firebaseConfig = {
+  apiKey: "AIzaSyD5qHSNK17JFLxUj_9mnKbb7XsYVSwb9u8",
+  authDomain: "btechno-b5d80.firebaseapp.com",
+  projectId: "btechno-b5d80",
+  storageBucket: "btechno-b5d80.appspot.com",
+  messagingSenderId: "147019806629",
+  appId: "1:147019806629:web:bc7828be9ae8c4b4f1da4c"
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
+
+/* ===== تسجيل حساب جديد ===== */
+window.register = async function() {
     const name = regName.value.trim();
     const age = regAge.value;
     const phone = regPhone.value.trim();
@@ -177,53 +109,58 @@ function register(){
     const pass2 = regPass2.value;
 
     if(pass !== pass2){
-        registerMsg.innerHTML = "<span class='error'>كلمتا السر غير متطابقتين</span>";
+        registerMsg.innerHTML="<span class='error'>كلمتا السر غير متطابقتين</span>";
         return;
     }
 
-    const user = {name,age,phone,email,pass};
-    localStorage.setItem("xvicdom_user", JSON.stringify(user));
+    try {
+        const userCredential = await createUserWithEmailAndPassword(auth,email,pass);
+        const user = userCredential.user;
 
-    registerMsg.innerHTML = "<span class='success'>✅ تم إنشاء الحساب بنجاح</span>";
-    setTimeout(showLogin,1200);
-}
+        await setDoc(doc(db,"users",user.uid),{
+            name, age, phone, email,
+            balance:0,
+            role: email==="btechno1010@gmail.com"?"admin":"user"
+        });
 
-function login(){
+        registerMsg.innerHTML="<span class='success'>✅ تم إنشاء الحساب بنجاح</span>";
+        setTimeout(showLogin,1200);
+
+    } catch(error){
+        registerMsg.innerHTML="<span class='error'>"+error.message+"</span>";
+    }
+};
+
+/* ===== تسجيل الدخول ===== */
+window.login = async function() {
     const email = loginEmail.value.trim();
     const pass = loginPass.value;
 
-    /* ===== حساب الأدمن ===== */
-    if(email === "btechno1010@gmail.com" && pass === "12356789"){
-        loginMsg.innerHTML = "<span class='success'>👑 مرحبًا بك يا Admin</span>";
+    try {
+        const userCredential = await signInWithEmailAndPassword(auth,email,pass);
+        const user = userCredential.user;
 
-        setTimeout(() => {
-            window.location.href = "admin.html";
-        }, 1000);
-        return;
+        const docSnap = await getDoc(doc(db,"users",user.uid));
+        const data = docSnap.data();
+
+        if(!data){
+            loginMsg.innerHTML="<span class='error'>حساب غير موجود</span>";
+            return;
+        }
+
+        if(data.role === "admin"){
+            loginMsg.innerHTML="<span class='success'>👑 مرحبًا بك يا Admin</span>";
+            setTimeout(()=>window.location.href="admin.html",1000);
+        }else{
+            loginMsg.innerHTML="<span class='success'>🎉 مرحبًا بك "+data.name+"</span>";
+            setTimeout(()=>window.location.href="x.victom (4).html",1000);
+        }
+
+    } catch(error){
+        loginMsg.innerHTML="<span class='error'>بيانات غير صحيحة</span>";
     }
-
-    /* ===== الحساب العادي ===== */
-    const saved = JSON.parse(localStorage.getItem("xvicdom_user"));
-
-    if(!saved){
-        loginMsg.innerHTML = "<span class='error'>لا يوجد حساب مسجل</span>";
-        return;
-    }
-
-    if(saved.email === email && saved.pass === pass){
-        localStorage.setItem("xvicdom_logged", "true");
-        loginMsg.innerHTML = "<span class='success'>🎉 مرحبًا بك "+saved.name+"</span>";
-
-        setTimeout(() => {
-            window.location.href = "x.victom (4).html";
-        }, 1000);
-
-    }else{
-        loginMsg.innerHTML = "<span class='error'>بيانات غير صحيحة</span>";
-    }
-}
+};
 </script>
-
 
 </body>
 </html>
