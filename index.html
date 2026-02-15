@@ -192,6 +192,17 @@ function login(){
     const email = loginEmail.value.trim();
     const pass = loginPass.value;
 
+    /* ===== حساب الأدمن ===== */
+    if(email === "btechno1010@gmail.com" && pass === "12356789"){
+        loginMsg.innerHTML = "<span class='success'>👑 مرحبًا بك يا Admin</span>";
+
+        setTimeout(() => {
+            window.location.href = "admin.html";
+        }, 1000);
+        return;
+    }
+
+    /* ===== الحساب العادي ===== */
     const saved = JSON.parse(localStorage.getItem("xvicdom_user"));
 
     if(!saved){
@@ -211,8 +222,8 @@ function login(){
         loginMsg.innerHTML = "<span class='error'>بيانات غير صحيحة</span>";
     }
 }
-
 </script>
+
 
 </body>
 </html>
