@@ -224,6 +224,8 @@ onAuthStateChanged(auth,(user)=>{
       document.getElementById("balance").innerText = balance;
 
       renderProducts(data.rented || {});
+      dailyUpdate(); // <--- هنا لتحديث الربح اليومي تلقائياً
+
     });
   }
 });
@@ -293,6 +295,41 @@ async function dailyLogin(){
     showToast("✅ تم تسجيل الدخول اليومي");
   }else showToast("⏳ مرة واحدة كل 24 ساعة");
 }
+async function addDailyProfit() {
+  if(!currentUID) return; // لو المستخدم مش مسجل بعد
+
+  const userDoc = doc(db,"users",currentUID);
+  const docSnap = await getDoc(userDoc);
+  const data = docSnap.data();
+
+  const rented = data.rented || {};
+  let totalProfit = 0;
+
+  products.forEach(p => {
+    if(rented[p.id]) {
+      totalProfit += p.price * 0.23; // ربح يومي 23%
+    }
+  });
+
+  if(totalProfit > 0){
+    balance += totalProfit;
+    document.getElementById("balance").innerText = balance;
+
+    await updateDoc(userDoc,{balance});
+    await addTransaction("ربح يومي", totalProfit);
+
+    showToast(`💰 تم إضافة الربح اليومي: ${totalProfit.toFixed(0)} ج`);
+  }
+}
+async function dailyUpdate() {
+  const lastDailyProfit = transactions.filter(t=>t.type==="ربح يومي").pop()?.date || 0;
+  const now = Date.now();
+
+  if(now - new Date(lastDailyProfit).getTime() >= 86400000){ // 24 ساعة
+    await addDailyProfit();
+  }
+}
+
 
 /* سحب */
 async function requestWithdraw(){
@@ -334,4 +371,4 @@ function toggleModal(id){
 </script>
 
 </body>
-</html>
+</html>   
