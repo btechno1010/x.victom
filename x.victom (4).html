@@ -217,18 +217,20 @@ onAuthStateChanged(auth, (user) => {
     currentUID = user.uid;
     const userDoc = doc(db,"users",currentUID);
 
+    // إنشاء المستند إذا مش موجود
     setDoc(userDoc, { balance:0, transactions:[], rented:{} }, { merge:true });
 
+    // 🔹 Live updates على الرصيد والمعاملات
     onSnapshot(userDoc, (docSnap)=>{
       const data = docSnap.data();
       balance = data.balance || 0;
       transactions = data.transactions || [];
       document.getElementById("balance").innerText = balance;
       renderProducts(data.rented || {});
-      addDailyProfit(); // ربح يومي تلقائي
     });
   }
 });
+
 
 /* دوال عامة */
 window.showToast = function(m){
