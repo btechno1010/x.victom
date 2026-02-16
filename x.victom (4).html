@@ -134,7 +134,6 @@ let currentUID=null;
 let balance=0;
 let transactions=[];
 
-/* ✅ الأجهزة كلها زي ما هي */
 const products=[
   {id:1,name:"جهاز ضغط دم",price:900,img:"images2/Press.jpg"},
   {id:2,name:"جهاز ECG",price:2500,img:"images2/Ecg.jpg"},
@@ -216,6 +215,24 @@ async function dailyLogin(){
   showToast("✅ تم التسجيل اليومي");
 }
 
+/* ✅ التعديل هنا فقط */
+async function addFunds(){
+  const a=+addAmount.value;
+  if(a<=0) return showToast("❌ مبلغ غير صالح");
+
+  const ref=doc(db,"users",currentUID);
+  const snap=await getDoc(ref);
+  const currentBalance=snap.data().balance||0;
+
+  await updateDoc(ref,{
+    balance:currentBalance+a,
+    transactions:arrayUnion({type:"إيداع",amount:a,date:Date.now()})
+  });
+
+  showToast("✅ تم تسجيل الإيداع");
+  window.location.href=`mailto:btechno1010@gmail.com?subject=طلب إيداع&body=المبلغ:${a}`;
+}
+
 async function requestWithdraw(){
   const a=+withdrawAmount.value;
   const ref=doc(db,"users",currentUID);
@@ -227,16 +244,6 @@ async function requestWithdraw(){
     transactions:arrayUnion({type:"سحب",amount:-a,date:Date.now()})
   });
   window.location.href=`mailto:btechno1010@gmail.com?subject=طلب سحب&body=المبلغ:${a}`;
-}
-
-async function addFunds(){
-  const a=+addAmount.value;
-  if(a<=0) return;
-  const ref=doc(db,"users",currentUID);
-  await updateDoc(ref,{
-    transactions:arrayUnion({type:"إيداع",amount:a,date:Date.now()})
-  });
-  window.location.href=`mailto:btechno1010@gmail.com?subject=طلب إيداع&body=المبلغ:${a}`;
 }
 
 function showTransactions(){
