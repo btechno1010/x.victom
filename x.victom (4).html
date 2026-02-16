@@ -167,14 +167,16 @@ onAuthStateChanged(auth, async (user)=>{
 
   const docSnap = await getDoc(userDoc);
 
-  if(!docSnap.exists()){
-    await setDoc(userDoc,{
-      balance:0,
-      transactions:[],
-      rented:{},
-      createdAt:new Date().toISOString()
-    });
-  }
+ if(!docSnap.exists()){
+  await setDoc(userDoc,{
+    balance:0,
+    transactions:[],
+    rented:{},
+    createdAt:new Date().toISOString(),
+    lastDailyProfit:0  // لتتبع آخر مرة تم إضافة أرباح الأجهزة
+  });
+}
+
 
   onSnapshot(userDoc,(docSnap)=>{
     const data = docSnap.data();
@@ -221,6 +223,33 @@ async function rentProduct(id,price){
   });
   showToast("✅ تم التأجير");
 }
+  async function addDailyProfit(){
+  const ref = doc(db,"users",currentUID);
+  const snap = await getDoc(ref);
+  const data = snap.data();
+
+  const last = data.lastDailyProfit || 0;
+
+  if(Date.now() - last < 86400000) return; // أقل من 24 ساعة
+
+  let totalProfit = 0;
+  for(const id in data.rented){
+    const product = products.find(p => p.id == id);
+    if(product && data.rented[id]){
+      totalProfit += Math.floor(product.price * 0.23);
+    }
+  }
+
+  if(totalProfit > 0){
+    await updateDoc(ref,{
+      balance: data.balance + totalProfit,
+      transactions: arrayUnion({type:"ربح يومي", amount: totalProfit, date: Date.now()}),
+      lastDailyProfit: Date.now()
+    });
+    showToast(`💰 تم إضافة أرباح الأجهزة اليومية: ${totalProfit} ج`);
+  }
+}
+
 
 async function dailyLogin(){
   const ref=doc(db,"users",currentUID);
