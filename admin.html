@@ -84,14 +84,14 @@ onAuthStateChanged(auth, async (user)=>{
     return;
   }
 
-  const docSnap = await getDoc(doc(db,"users",user.uid));
-  const data = docSnap.data();
+  const docSnap = await getDoc(doc(db,"admins",user.uid));
 
-  if(!data || data.role !== "admin"){
-    alert("غير مصرح ❌");
-    window.location.href="login.html";
-    return;
-  }
+if(!docSnap.exists()){
+  alert("غير مصرح ❌");
+  window.location.href="login.html";
+  return;
+}
+
 
   loadUsers(); // تحميل المستخدمين بعد التأكد
 });
@@ -172,4 +172,5 @@ window.updateBalance = async function(uid){
 
 </body>
 </html>
+
 
