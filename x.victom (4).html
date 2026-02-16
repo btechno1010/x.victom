@@ -176,7 +176,7 @@ onAuthStateChanged(auth, async (user)=>{
     lastDailyProfit:0  // لتتبع آخر مرة تم إضافة أرباح الأجهزة
   });
 }
-
+  await addDailyProfit();
 
   onSnapshot(userDoc,(docSnap)=>{
     const data = docSnap.data();
