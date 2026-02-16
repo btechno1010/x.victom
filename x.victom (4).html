@@ -149,24 +149,37 @@ const products=[
   {id:8,name:"جهاز سكر",price:700,img:"images2/Sugar.jpg"}
 ];
 
-onAuthStateChanged(auth, async user=>{
-  if(!user) return;
-  currentUID=user.uid;
-  const ref=doc(db,"users",currentUID);
+onAuthStateChanged(auth, async (user)=>{
 
-  const snap=await getDoc(ref);
-  if(!snap.exists()){
-    await setDoc(ref,{balance:0,transactions:[],rented:{}});
+  if(!user){
+    window.location.href="login.html";
+    return;
   }
 
-  onSnapshot(ref,s=>{
-    const d=s.data();
-    balance=d.balance||0;
-    transactions=d.transactions||[];
-    document.getElementById("balance").innerText=balance;
-    renderProducts(d.rented||{});
+  currentUID = user.uid;
+  const userDoc = doc(db,"users",currentUID);
+
+  const docSnap = await getDoc(userDoc);
+
+  if(!docSnap.exists()){
+    await setDoc(userDoc,{
+      balance:0,
+      transactions:[],
+      rented:{},
+      createdAt:new Date().toISOString()
+    });
+  }
+
+  onSnapshot(userDoc,(docSnap)=>{
+    const data = docSnap.data();
+    balance = data.balance || 0;
+    transactions = data.transactions || [];
+    document.getElementById("balance").innerText = balance;
+    renderProducts(data.rented || {});
   });
+
 });
+
 
 function renderProducts(rented){
   const c=document.getElementById("products");
