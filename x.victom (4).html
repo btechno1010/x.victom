@@ -212,24 +212,29 @@ signInAnonymously(auth).catch(err => {
   showToast("❌ حدث خطأ في تسجيل الدخول");
 });
 
-onAuthStateChanged(auth, (user) => {
-  if(user){
-    currentUID = user.uid;
-    const userDoc = doc(db,"users",currentUID);
+onAuthStateChanged(auth, async (user) => {
+  if (!user) return;
 
-    // إنشاء المستند إذا مش موجود
-    setDoc(userDoc, { balance:0, transactions:[], rented:{} }, { merge:true });
+  currentUID = user.uid;
+  const userDoc = doc(db,"users",currentUID);
 
-    // 🔹 Live updates على الرصيد والمعاملات
-    onSnapshot(userDoc, (docSnap)=>{
-      const data = docSnap.data();
-      balance = data.balance || 0;
-      transactions = data.transactions || [];
-      document.getElementById("balance").innerText = balance;
-      renderProducts(data.rented || {});
-    });
+  // تحقق إذا المستند موجود
+  const docSnap = await getDoc(userDoc);
+  if (!docSnap.exists()) {
+    // المستند جديد، نعمله مع القيم الافتراضية
+    await setDoc(userDoc, { balance:0, transactions:[], rented:{} });
   }
+
+  // الاشتراك في التغييرات الحية
+  onSnapshot(userDoc, (docSnap) => {
+    const data = docSnap.data();
+    balance = data.balance || 0;
+    transactions = data.transactions || [];
+    document.getElementById("balance").innerText = balance;
+    renderProducts(data.rented || {});
+  });
 });
+
 
 
 /* دوال عامة */
