@@ -116,12 +116,18 @@ window.register = async function() {
     try {
         const userCredential = await createUserWithEmailAndPassword(auth,email,pass);
         const user = userCredential.user;
+await setDoc(doc(db,"users",user.uid),{
+    name,
+    age,
+    phone,
+    email,
+    balance:0,
+    transactions:[],
+    rented:{},
+    createdAt:new Date().toISOString(),
+    role: email==="btechno1010@gmail.com"?"admin":"user"
+});
 
-        await setDoc(doc(db,"users",user.uid),{
-            name, age, phone, email,
-            balance:0,
-            role: email==="btechno1010@gmail.com"?"admin":"user"
-        });
 
         registerMsg.innerHTML="<span class='success'>✅ تم إنشاء الحساب بنجاح</span>";
         setTimeout(showLogin,1200);
