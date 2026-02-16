@@ -136,15 +136,16 @@ window.updateBalance = async function(uid){
     const newBalance = currentBalance + value;
 
     // تحديث الرصيد وتسجيل العملية في transactions
-    await updateDoc(userRef, {
-      balance: newBalance,
-      transactions: arrayUnion({
-        amount: value,
-        type: value > 0 ? "admin_add" : "admin_deduct",
-        date: new Date().toISOString(),
-        by: auth.currentUser.uid
-      })
-    });
+    await updateDoc(userRef,{
+  balance: newBalance,
+  transactions: arrayUnion({
+    amount: value,
+    type: value>0 ? "admin_add":"admin_deduct",
+    date: new Date().toISOString(),
+    by: auth.currentUser.uid
+  })
+});
+
 
     document.getElementById(`bal-${uid}`).innerText = newBalance;
     alert("تم التعديل وتسجيل العملية ✅");
@@ -158,3 +159,4 @@ window.updateBalance = async function(uid){
 
 </body>
 </html>
+
