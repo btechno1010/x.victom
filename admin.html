@@ -3,24 +3,23 @@
 <head>
 <meta charset="UTF-8">
 <title>لوحة الأدمن</title>
-
 <style>
 body{
   font-family:Cairo;
   background:#0b1d2a;
   color:#fff;
-  padding:20px
+  padding:20px;
 }
 table{
   width:100%;
   border-collapse:collapse;
   margin-top:20px;
-  background:#132b3a
+  background:#132b3a;
 }
 th,td{
   padding:10px;
   border:1px solid #1f4258;
-  text-align:center
+  text-align:center;
 }
 button{
   padding:6px 12px;
@@ -28,18 +27,17 @@ button{
   background:#00e5ff;
   cursor:pointer;
   border-radius:6px;
-  font-weight:bold
+  font-weight:bold;
 }
 input{
   width:70px;
   padding:5px;
-  text-align:center
+  text-align:center;
 }
 </style>
 </head>
 
 <body>
-
 <h2>📊 لوحة تحكم الأدمن</h2>
 
 <table id="usersTable">
@@ -55,10 +53,10 @@ input{
 <script type="module">
 // 🔹 استيراد Firebase
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-import { getFirestore, collection, onSnapshot, doc, updateDoc, getDoc, arrayUnion, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+import { getFirestore, collection, onSnapshot, doc, getDoc, updateDoc, arrayUnion } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 
-// 🔹 بيانات مشروعك
+// 🔹 إعدادات Firebase
 const firebaseConfig = {
   apiKey: "AIzaSyD5qHSNK17JFLxUj_9mnKbb7XsYVSwb9u8",
   authDomain: "btechno-b5d80.firebaseapp.com",
@@ -69,29 +67,19 @@ const firebaseConfig = {
   measurementId: "G-L7DYLWVHHJ"
 };
 
-// 🔹 تشغيل Firebase
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 const auth = getAuth(app);
 
 const table = document.getElementById("usersTable");
 
-// 🔹 UID الأدمن مؤقت للاختبار
-onAuthStateChanged(auth, (user) => {
-  if (user) {
-    console.log("UID الخاص بك هو:", user.uid);
-    alert("UID الخاص بك هو: " + user.uid); // بعد ما تضيف UID للأدمن في collection admins ممكن تحذفه
-  }
-});
-
-// 🔹 حماية صفحة الأدمن
+// 🔹 التحقق من أن المستخدم أدمن
 onAuthStateChanged(auth, async (user)=>{
   if(!user){
     window.location.href="login.html";
     return;
   }
 
-  // تحقق من وجود الأدمن في collection "admins"
   const adminDoc = await getDoc(doc(db,"admins",user.uid));
   if(!adminDoc.exists()){
     alert("غير مصرح ❌");
@@ -99,7 +87,6 @@ onAuthStateChanged(auth, async (user)=>{
     return;
   }
 
-  // لو الأدمن موجود، اكمل تحميل المستخدمين
   loadUsers();
 });
 
@@ -115,7 +102,6 @@ function loadUsers(){
         <th>تعديل</th>
       </tr>
     `;
-
     snapshot.forEach(docSnap=>{
       const data = docSnap.data();
       const uid = docSnap.id;
@@ -136,30 +122,34 @@ function loadUsers(){
   });
 }
 
-// 🔹 تعديل الرصيد
+// 🔹 تعديل الرصيد بواسطة الأدمن
 window.updateBalance = async function(uid){
   const value = Number(document.getElementById(`input-${uid}`).value);
-  if(isNaN(value) || value === 0) return alert("قيمة غير صحيحة ❌");
+  if(isNaN(value) || value === 0){
+    return alert("قيمة غير صحيحة ❌");
+  }
 
-  try{
-    const userRef = doc(db,"users",uid);
+  try {
+    const userRef = doc(db, "users", uid);
     const userSnap = await getDoc(userRef);
     const currentBalance = userSnap.data().balance || 0;
     const newBalance = currentBalance + value;
 
-    await updateDoc(userRef,{
+    // تحديث الرصيد وتسجيل العملية في transactions
+    await updateDoc(userRef, {
       balance: newBalance,
       transactions: arrayUnion({
         amount: value,
         type: value > 0 ? "admin_add" : "admin_deduct",
-        date: serverTimestamp(),
+        date: new Date().toISOString(),
         by: auth.currentUser.uid
       })
     });
 
     document.getElementById(`bal-${uid}`).innerText = newBalance;
     alert("تم التعديل وتسجيل العملية ✅");
-  }catch(e){
+
+  } catch (e) {
     console.error(e);
     alert("خطأ في الصلاحيات ❌");
   }
