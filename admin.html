@@ -84,13 +84,17 @@ onAuthStateChanged(auth, async (user)=>{
     return;
   }
 
-  const docSnap = await getDoc(doc(db,"admins",user.uid));
-
-if(!docSnap.exists()){
+ // تحقق من وجود الأدمن في collection "admins"
+const adminDoc = await getDoc(doc(db,"admins",user.uid));
+if(!adminDoc.exists()){
   alert("غير مصرح ❌");
   window.location.href="login.html";
   return;
 }
+
+// لو الأدمن موجود، اكمل تحميل المستخدمين
+loadUsers();
+
 
 
   loadUsers(); // تحميل المستخدمين بعد التأكد
@@ -172,5 +176,6 @@ window.updateBalance = async function(uid){
 
 </body>
 </html>
+
 
 
