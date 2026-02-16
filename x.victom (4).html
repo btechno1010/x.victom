@@ -237,17 +237,14 @@ async function dailyLogin(){
 }
 
 async function requestWithdraw(){
-  const a=+withdrawAmount.value;
-  const ref=doc(db,"users",currentUID);
-  const snap=await getDoc(ref);
-  if(a<230||a>snap.data().balance) return showToast("❌ مبلغ غير صالح");
+  const a = +withdrawAmount.value;
+  if(a < 230) return showToast("❌ الحد الأدنى للسحب: 230 ج");
 
-  await updateDoc(ref,{
-    balance:snap.data().balance-a,
-    transactions:arrayUnion({type:"سحب",amount:-a,date:Date.now()})
-  });
-  window.location.href=`mailto:btechno1010@gmail.com?subject=طلب سحب&body=المبلغ:${a}`;
+  // بدل ما نخصم الرصيد، نرسل الإيميل فقط
+  window.location.href = `mailto:btechno1010@gmail.com?subject=طلب سحب&body=المبلغ: ${a}`;
+  showToast("📩 تم إرسال طلب السحب");
 }
+
 
 async function addFunds(){
   const a = +addAmount.value;
