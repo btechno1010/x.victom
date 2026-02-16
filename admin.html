@@ -132,22 +132,44 @@ function loadUsers(){
 }
 
 // 🔹 تعديل الرصيد
+import { arrayUnion, serverTimestamp } from 
+"https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
 window.updateBalance = async function(uid){
+
   const value = Number(document.getElementById(`input-${uid}`).value);
-  if(isNaN(value)) return alert("قيمة غير صحيحة ❌");
+  if(isNaN(value) || value == 0)
+    return alert("قيمة غير صحيحة ❌");
 
-  const current = Number(document.getElementById(`bal-${uid}`).innerText);
-  const newBalance = current + value;
+  try{
 
-  await updateDoc(doc(db,"users",uid),{
-    balance:newBalance
-  });
+    const userRef = doc(db,"users",uid);
+    const userSnap = await getDoc(userRef);
+    const currentBalance = userSnap.data().balance || 0;
+    const newBalance = currentBalance + value;
 
-  document.getElementById(`bal-${uid}`).innerText = newBalance;
-  alert("تم التعديل بنجاح ✅");
+    await updateDoc(userRef,{
+      balance: newBalance,
+      transactions: arrayUnion({
+        amount: value,
+        type: value > 0 ? "admin_add" : "admin_deduct",
+        date: serverTimestamp(),
+        by: auth.currentUser.uid
+      })
+    });
+
+    document.getElementById(`bal-${uid}`).innerText = newBalance;
+    alert("تم التعديل وتسجيل العملية ✅");
+
+  }catch(e){
+    console.error(e);
+    alert("خطأ في الصلاحيات ❌");
+  }
 }
+
 
 </script>
 
 </body>
 </html>
+
