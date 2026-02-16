@@ -4,8 +4,8 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>X.VÍČÞØM</title>
-
 <style>
+/* ... نفس CSS اللي عندك ... */
 *{box-sizing:border-box;font-family:"Cairo",sans-serif}
 body{
   margin:0;direction:rtl;
@@ -14,122 +14,38 @@ body{
 }
 .overlay{background:rgba(6,19,31,.9);min-height:100vh;padding-bottom:80px}
 header{text-align:center;padding:20px}
-
-.container{
-  display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
-  gap:18px;padding:20px
-}
-
-.card{
-  background:rgba(255,255,255,.1);
-  backdrop-filter:blur(12px);
-  border-radius:20px;
-  padding:15px;text-align:center;
-  border:1px solid rgba(255,255,255,.2);
-  box-shadow:0 10px 30px rgba(0,0,0,.4)
-}
+.container{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:18px;padding:20px}
+.card{background:rgba(255,255,255,.1);backdrop-filter:blur(12px);border-radius:20px;padding:15px;text-align:center;border:1px solid rgba(255,255,255,.2);box-shadow:0 10px 30px rgba(0,0,0,.4)}
 .card img{width:100%;height:120px;object-fit:contain}
-.card button{
-  padding:8px 12px;border:none;border-radius:20px;
-  font-weight:bold;cursor:pointer;margin-top:5px
-}
+.card button{padding:8px 12px;border:none;border-radius:20px;font-weight:bold;cursor:pointer;margin-top:5px}
 .card button[disabled]{background:#555;cursor:not-allowed}
-
-.wallet{
-  position:fixed;top:15px;right:15px;
-  background:linear-gradient(135deg,#00e5ff,#0066ff);
-  color:#000;padding:12px 18px;border-radius:40px;
-  display:flex;gap:6px;align-items:center;
-  font-weight:bold;z-index:1000;flex-wrap:wrap
-}
-.wallet button{
-  border:none;background:#000;color:#00e5ff;
-  padding:5px 10px;border-radius:20px;cursor:pointer;font-size:12px
-}
-
-.toast{
-  position:fixed;top:-100px;right:50%;
-  transform:translateX(50%);
-  background:#e53935;color:#fff;
-  padding:12px 25px;border-radius:30px;
-  transition:.5s;z-index:4000
-}
+.wallet{position:fixed;top:15px;right:15px;background:linear-gradient(135deg,#00e5ff,#0066ff);color:#000;padding:12px 18px;border-radius:40px;display:flex;gap:6px;align-items:center;font-weight:bold;z-index:1000;flex-wrap:wrap}
+.wallet button{border:none;background:#000;color:#00e5ff;padding:5px 10px;border-radius:20px;cursor:pointer;font-size:12px}
+.toast{position:fixed;top:-100px;right:50%;transform:translateX(50%);background:#e53935;color:#fff;padding:12px 25px;border-radius:30px;transition:.5s;z-index:4000}
 .toast.show{top:30px}
-
 /* TRUST */
-.trust-section{
-  margin:30px 20px;padding:25px;
-  background:rgba(255,255,255,.05);
-  border-radius:20px;text-align:center
-}
-.trust-logo{
-  display:inline-block;margin-bottom:15px;
-  padding:10px 20px;border-radius:30px;
-  background:linear-gradient(135deg,#00ffea,#0066ff);
-  color:#000;font-weight:bold;cursor:pointer
-}
-.trust-badges{
-  display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(80px,1fr));
-  gap:15px;margin-top:20px
-}
+.trust-section{margin:30px 20px;padding:25px;background:rgba(255,255,255,.05);border-radius:20px;text-align:center}
+.trust-logo{display:inline-block;margin-bottom:15px;padding:10px 20px;border-radius:30px;background:linear-gradient(135deg,#00ffea,#0066ff);color:#000;font-weight:bold;cursor:pointer}
+.trust-badges{display:grid;grid-template-columns:repeat(auto-fit,minmax(80px,1fr));gap:15px;margin-top:20px}
 .trust-badges img{width:45px;opacity:.8;transition:.3s}
 .trust-badges img:hover{opacity:1;transform:scale(1.1)}
-
 /* POPUPS */
-.popup,.modal{
-  position:fixed;top:50%;left:50%;
-  transform:translate(-50%,-50%);
-  background:#fff;color:#000;
-  width:340px;border-radius:20px;
-  padding:20px;text-align:center;
-  display:none;z-index:5000
-}
-.popup button,.modal button{
-  margin-top:10px;padding:8px 15px;
-  border:none;border-radius:20px;
-  background:#0066ff;color:#fff;cursor:pointer
-}
-.modal input{
-  width:100%;padding:10px;margin-top:10px;
-  border-radius:15px;border:1px solid #ccc
-}
+.popup,.modal{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:#fff;color:#000;width:340px;border-radius:20px;padding:20px;text-align:center;display:none;z-index:5000}
+.popup button,.modal button{margin-top:10px;padding:8px 15px;border:none;border-radius:20px;background:#0066ff;color:#fff;cursor:pointer}
+.modal input{width:100%;padding:10px;margin-top:10px;border-radius:15px;border:1px solid #ccc}
 .modal p{font-size:13px;color:#555;margin:8px 0}
-
 /* زر عرض المزيد */
-.more-btn-container{
-  display:flex;
-  justify-content:center;
-  margin:20px 0;
-}
-
-.more-btn{
-  padding:12px 25px;
-  border:none;
-  border-radius:30px;
-  background:linear-gradient(135deg,#ff9800,#ff5722);
-  color:#fff;
-  font-weight:bold;
-  cursor:pointer;
-  font-size:14px;
-  box-shadow:0 8px 20px rgba(0,0,0,.35);
-  transition: transform 0.3s, box-shadow 0.3s;
-}
-
-.more-btn:hover{
-  transform:scale(1.05);
-  box-shadow:0 12px 30px rgba(0,0,0,.45);
-}
+.more-btn-container{display:flex;justify-content:center;margin:20px 0}
+.more-btn{padding:12px 25px;border:none;border-radius:30px;background:linear-gradient(135deg,#ff9800,#ff5722);color:#fff;font-weight:bold;cursor:pointer;font-size:14px;box-shadow:0 8px 20px rgba(0,0,0,.35);transition: transform 0.3s, box-shadow 0.3s;}
+.more-btn:hover{transform:scale(1.05);box-shadow:0 12px 30px rgba(0,0,0,.45);}
 </style>
 </head>
-
 <body>
 <div class="overlay">
 
 <div class="wallet">
 💰 <span id="balance">0</span> ج
-<button onclick="dailyLogin()">تسجيل</button>
+<button id="dailyBtn">تسجيل</button>
 <button onclick="toggleModal('withdrawBox')">سحب</button>
 <button onclick="toggleModal('addBox')">إيداع</button>
 <button onclick="showTransactions()">السجل</button>
@@ -153,21 +69,20 @@ header{text-align:center;padding:20px}
 </div>
 </div>
 
-<!-- POPUPS -->
 <div class="container" id="products"></div>
 
 <div class="modal" id="withdrawBox">
 <h3>طلب سحب</h3>
 <input type="number" id="withdrawAmount" placeholder="المبلغ">
 <p>الحد الأدنى للسحب: <strong>230 ج</strong></p>
-<button onclick="requestWithdraw()">إرسال</button>
+<button id="withdrawBtn">إرسال</button>
 <button onclick="toggleModal('withdrawBox')">إغلاق</button>
 </div>
 
 <div class="modal" id="addBox">
 <h3>طلب إيداع</h3>
 <input type="number" id="addAmount" placeholder="المبلغ">
-<button onclick="addFunds()">إرسال</button>
+<button id="addBtn">إرسال</button>
 <button onclick="toggleModal('addBox')">إغلاق</button>
 </div>
 
@@ -176,7 +91,7 @@ header{text-align:center;padding:20px}
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
 import { getAuth, onAuthStateChanged, signInAnonymously } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-import { getFirestore, doc, onSnapshot, updateDoc, setDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+import { getFirestore, doc, onSnapshot, updateDoc, setDoc, arrayUnion, getDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyD5qHSNK17JFLxUj_9mnKbb7XsYVSwb9u8",
@@ -209,116 +124,130 @@ const products=[
 /* تسجيل دخول مجهول */
 signInAnonymously(auth).catch(console.error);
 
-onAuthStateChanged(auth,(user)=>{
+onAuthStateChanged(auth, async (user)=>{
   if(user){
     currentUID = user.uid;
     const userDoc = doc(db,"users",currentUID);
 
-    /* إنشاء المستخدم في Firestore إذا غير موجود */
-    setDoc(userDoc, { balance: 0, transactions: [], rented: {} }, { merge:true });
+    // إنشاء المستخدم إذا غير موجود
+    await setDoc(userDoc, { balance:0, transactions:[], rented:{} }, {merge:true});
 
-    onSnapshot(userDoc,(docSnap)=>{
+    // تفعيل أزرار بعد التأكد من UID
+    document.getElementById("dailyBtn").disabled = false;
+    document.getElementById("withdrawBtn").disabled = false;
+    document.getElementById("addBtn").disabled = false;
+
+    onSnapshot(userDoc, (docSnap)=>{
       const data = docSnap.data();
       balance = data.balance || 0;
       transactions = data.transactions || [];
       document.getElementById("balance").innerText = balance;
-
       renderProducts(data.rented || {});
     });
   }
 });
 
+/* عرض الأجهزة */
 function renderProducts(rented){
   const container = document.getElementById("products");
   container.innerHTML = "";
   products.forEach(p=>{
-    container.innerHTML += `
-    <div class="card">
+    const card = document.createElement("div");
+    card.className="card";
+    card.innerHTML = `
       <img src="${p.img}">
       <h4>${p.name}</h4>
       <p>${p.price} ج</p>
       <p style="color:#00c853">ربح يومي ${(p.price*0.23).toFixed(0)} ج</p>
-      <button ${rented[p.id]?"disabled":""} onclick="rent(${p.id},${p.price})">
-        ${rented[p.id]?"تم التأجير":"تأجير"}
-      </button>
-    </div>`;
+    `;
+    const btn = document.createElement("button");
+    btn.textContent = rented[p.id]?"تم التأجير":"تأجير";
+    btn.disabled = rented[p.id];
+    btn.addEventListener("click", async ()=>{
+      if(!currentUID){ showToast("❌ جاري التحميل..."); return; }
+      if(balance < p.price){ showToast("❌ الرصيد غير كافي"); return; }
+      const userDoc = doc(db,"users",currentUID);
+      const newBalance = balance - p.price;
+      await updateDoc(userDoc,{
+        balance:newBalance,
+        [`rented.${p.id}`]: true,
+        transactions: arrayUnion({type:"تأجير",amount:-p.price,date:new Date().toLocaleString()})
+      });
+      const snap = await getDoc(userDoc);
+      balance = snap.data().balance;
+      document.getElementById("balance").innerText = balance;
+      showToast("تم التأجير ✅");
+      renderProducts(snap.data().rented || {});
+    });
+    card.appendChild(btn);
+    container.appendChild(card);
   });
 }
 
-function showToast(m){
-  const t=document.getElementById("toast");
-  t.innerText=m;t.classList.add("show");
+/* Toast */
+function showToast(msg){
+  const t = document.getElementById("toast");
+  t.innerText = msg;
+  t.classList.add("show");
   setTimeout(()=>t.classList.remove("show"),3000);
 }
 
-function moreDevices(){
-  showToast("⚠️ تعذر تحميل المزيد من الأجهزة حالياً");
-}
+function moreDevices(){ showToast("⚠️ تعذر تحميل المزيد من الأجهزة حالياً"); }
 
-async function addTransaction(type,amount){
-  transactions.push({type,amount,date:new Date().toLocaleString()});
-  await updateDoc(doc(db,"users",currentUID),{ transactions });
-}
-
-/* تأجير */
-window.rent = async function(id,price){
-  if(balance<price){ showToast("❌ الرصيد غير كافي"); return; }
-
-  balance -= price;
-  document.getElementById("balance").innerText = balance;
-
-  // تحديث Firebase
-  const userDoc = doc(db,"users",currentUID);
-  const rentedUpdate = {};
-  rentedUpdate[`rented.${id}`] = true;
-  await updateDoc(userDoc, {
-    balance,
-    ...rentedUpdate
-  });
-
-  await addTransaction("تأجير",-price);
-  showToast("تم التأجير ✅");
-}
-
-/* تسجيل يومي */
-async function dailyLogin(){
-  const userDoc = doc(db,"users",currentUID);
-  const lastDaily = transactions.find(t=>t.type==="مكافأة")?.date || 0;
-  const now = Date.now();
-  if(now - new Date(lastDaily).getTime() >= 86400000){
-    balance += 40;
-    document.getElementById("balance").innerText = balance;
-    await updateDoc(userDoc,{balance});
-    await addTransaction("مكافأة",40);
-    showToast("✅ تم تسجيل الدخول اليومي");
-  }else showToast("⏳ مرة واحدة كل 24 ساعة");
-}
+/* التسجيل اليومي */
+document.getElementById("dailyBtn").addEventListener("click", async ()=>{
+  if(!currentUID){ showToast("❌ جاري التحميل..."); return; }
+  try{
+    const userDoc = doc(db,"users",currentUID);
+    const lastDaily = transactions.filter(t=>t.type==="مكافأة").pop()?.date || 0;
+    const now = Date.now();
+    if(now - new Date(lastDaily).getTime() >= 86400000){
+      balance += 40;
+      document.getElementById("balance").innerText = balance;
+      await updateDoc(userDoc,{
+        balance,
+        transactions: arrayUnion({type:"مكافأة",amount:40,date:new Date().toLocaleString()})
+      });
+      showToast("✅ تم تسجيل الدخول اليومي");
+    } else showToast("⏳ مرة واحدة كل 24 ساعة");
+  }catch(e){ console.error(e); showToast("❌ حدث خطأ"); }
+});
 
 /* سحب */
-async function requestWithdraw(){
+document.getElementById("withdrawBtn").addEventListener("click", async ()=>{
+  if(!currentUID){ showToast("❌ جاري التحميل..."); return; }
   const a = +document.getElementById("withdrawAmount").value;
-  if(a<230){ showToast("❌ الحد الأدنى للسحب 230 ج"); return; }
+  if(a<230){ showToast("❌ الحد الأدنى 230 ج"); return; }
   if(a>balance){ showToast("❌ الرصيد غير كافي"); return; }
-
-  balance -= a;
-  document.getElementById("balance").innerText = balance;
-  const userDoc = doc(db,"users",currentUID);
-  await updateDoc(userDoc,{balance});
-  await addTransaction("سحب",-a);
-
-  showToast("✅ طلب السحب تم");
-  window.location.href=`mailto:btechno1010@gmail.com?subject=طلب سحب&body=المبلغ: ${a}`;
-}
+  try{
+    const userDoc = doc(db,"users",currentUID);
+    balance -= a;
+    document.getElementById("balance").innerText = balance;
+    await updateDoc(userDoc,{
+      balance,
+      transactions: arrayUnion({type:"سحب",amount:-a,date:new Date().toLocaleString()})
+    });
+    showToast("✅ تم طلب السحب");
+    window.location.href=`mailto:btechno1010@gmail.com?subject=طلب سحب&body=المبلغ: ${a}`;
+    toggleModal('withdrawBox');
+  }catch(e){ console.error(e); showToast("❌ حدث خطأ"); }
+});
 
 /* إيداع */
-async function addFunds(){
+document.getElementById("addBtn").addEventListener("click", async ()=>{
+  if(!currentUID){ showToast("❌ جاري التحميل..."); return; }
   const a = +document.getElementById("addAmount").value;
   if(a<=0){ showToast("❌ مبلغ غير صالح"); return; }
-
-  await addTransaction("إيداع",a);
-  showToast("✅ طلب الإيداع تم");
-  window.location.href=`mailto:btechno1010@gmail.com?subject=طلب إيداع&body=المبلغ: ${a}`;
-}
+  try{
+    const userDoc = doc(db,"users",currentUID);
+    await updateDoc(userDoc,{
+      transactions: arrayUnion({type:"إيداع",amount:a,date:new Date().toLocaleString()})
+    });
+    showToast("✅ تم طلب الإيداع");
+    window.location.href=`mailto:btechno1010@gmail.com?subject=طلب إيداع&body=المبلغ: ${a}`;
+    toggleModal('addBox');
+  }catch(e){ console.error(e); showToast("❌ حدث خطأ"); }
+});
 
 /* سجل المعاملات */
 function showTransactions(){
@@ -328,10 +257,9 @@ function showTransactions(){
 
 /* فتح/اغلاق المودال */
 function toggleModal(id){
-  const m=document.getElementById(id);
-  m.style.display=m.style.display==="block"?"none":"block";
+  const m = document.getElementById(id);
+  m.style.display = m.style.display==="block"?"none":"block";
 }
 </script>
-
 </body>
 </html>
