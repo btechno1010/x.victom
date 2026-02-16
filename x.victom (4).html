@@ -250,16 +250,14 @@ async function requestWithdraw(){
 }
 
 async function addFunds(){
-  const a=+addAmount.value;
-  if(a<=0) return;
-  const ref=doc(db,"users",currentUID);
-  const snap=await getDoc(ref);
-  await updateDoc(ref,{
-    balance:snap.data().balance+a,
-    transactions:arrayUnion({type:"إيداع",amount:a,date:Date.now()})
-  });
-  window.location.href=`mailto:btechno1010@gmail.com?subject=طلب إيداع&body=المبلغ:${a}`;
+  const a = +addAmount.value;
+  if(a <= 0) return showToast("❌ المبلغ غير صالح");
+
+  // بدل ما نحدث الرصيد، نرسل الإيميل فقط
+  window.location.href = `mailto:btechno1010@gmail.com?subject=طلب إيداع&body=المبلغ: ${a}`;
+  showToast("📩 تم إرسال طلب الإيداع");
 }
+
 
 function showTransactions(){
   alert(transactions.map(t=>`${new Date(t.date).toLocaleString()} | ${t.type} | ${t.amount}`).join("\n"));
